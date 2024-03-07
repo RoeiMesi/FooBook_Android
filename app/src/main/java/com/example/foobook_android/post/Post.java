@@ -6,7 +6,9 @@ import com.example.foobook_android.comment.Comment;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+@Entity
 public class Post implements Serializable {
     public static final int PHOTO_PICKED = 1;
     public static final int NO_PHOTO = 0;
@@ -26,7 +28,8 @@ public class Post implements Serializable {
 
 
 
-
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     public Post(String userName, String timestamp, String content, String profileImage) {
         this.userName = userName;
         this.timestamp = timestamp;
