@@ -161,7 +161,6 @@ public class CreatePostActivity extends AppCompatActivity  {
             // Use the PostViewModel to save the new post for the user
             postViewModel.createPostForUser(userId, newPost, this);
 
-            Toast.makeText(CreatePostActivity.this, "Post created successfully!", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK); // Set the result code for the calling activity
             finish(); // Close the activity
         } else {

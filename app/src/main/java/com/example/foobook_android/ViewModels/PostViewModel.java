@@ -3,6 +3,8 @@ package com.example.foobook_android.ViewModels;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -14,6 +16,11 @@ import com.example.foobook_android.post.Post;
 import com.example.foobook_android.Repositories.PostRepository;
 import com.example.foobook_android.utility.TokenManager;
 import com.example.foobook_android.utility.UserDetails;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -169,11 +176,29 @@ public class PostViewModel extends AndroidViewModel {
                         }
                         repository.insert(newPost);
 
-
+                        // Show success message with Toast
+                        Toast.makeText(context, "Post created successfully!", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    // Handle request failure (e.g., validation error)
-                    Log.e("PostViewModel", "Failed to update post");
+                    // Handle non-200 status codes
+                    String errorMessage = "Post update failed";
+
+                    if (response.errorBody() != null) {
+                        try {
+                            // Parse the JSON error body
+                            String errorJson = response.errorBody().string();
+                            JSONObject errorObj = new JSONObject(errorJson);
+
+                            // Extract only the "message" field
+                            errorMessage = errorObj.optString("message", "An error occurred");
+                        } catch (IOException | JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Display the error message via Toast without "{}" or "message:"
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+                    Log.e("PostViewModel", "Post creation failed: " + errorMessage);
                 }
             }
 
@@ -197,14 +222,37 @@ public class PostViewModel extends AndroidViewModel {
                     if (updatedPost != null) {
                         repository.update(updatedPost);
                     }
+                    // Show success message with Toast
+                    Toast.makeText(context, "Post updated successfully!", Toast.LENGTH_LONG).show();
                 } else {
+                    // Handle non-200 status codes
+                    String errorMessage = "Post update failed";
 
+                    if (response.errorBody() != null) {
+                        try {
+                            // Parse the JSON error body
+                            String errorJson = response.errorBody().string();
+                            JSONObject errorObj = new JSONObject(errorJson);
+
+                            // Extract only the "message" field
+                            errorMessage = errorObj.optString("message", "An error occurred");
+                        } catch (IOException | JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Display the error message via Toast without "{}" or "message:"
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+                    Log.e("PostViewModel", "Post update failed: " + errorMessage);
                 }
             }
 
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
-
+                // Handle request failure (e.g., network error)
+                String errorMessage = "Failed to connect to server: " + t.getMessage();
+                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+                Log.e("PostViewModel", errorMessage, t);
             }
         });
 

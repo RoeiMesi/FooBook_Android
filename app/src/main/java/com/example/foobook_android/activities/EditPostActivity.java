@@ -188,7 +188,6 @@ public class EditPostActivity extends AppCompatActivity {
             // Update the post using ViewModel
             postViewModel.updatePost(getCurrentUserId(), currentPost.getPostId(), currentPost, this);
 
-            Toast.makeText(EditPostActivity.this, "Post updated successfully", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity
         } else {
             // Prompt the user if the post content is empty
